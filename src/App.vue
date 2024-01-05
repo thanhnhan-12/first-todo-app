@@ -10,7 +10,7 @@ const inputCategory = ref(null);
 
 const todosAsc = computed(() =>
   todos.value.sort((a, b) => {
-    return b.createdAt - a.createdAt;
+    return a.createdAt - b.createdAt;
   })
 );
 
@@ -25,6 +25,10 @@ const addTodo = () => {
     done: false,
     createdAt: new Date().getTime(),
   });
+};
+
+const removeTodo = (todo) => {
+  todos.value = todos.value.filter((t) => t !== todo);
 };
 
 watch(
@@ -94,6 +98,33 @@ onMounted(() => {
 
         <input type="submit" value="Add todo" />
       </form>
+    </section>
+
+    <section class="todo-list">
+      <h3>TODO LIST</h3>
+      <div class="list" id="todo-list">
+        <div
+          v-for="todo in todosAsc"
+          :class="`todo-item ${todo.done && 'done'}`"
+        >
+          <label>
+            <input type="checkbox" v-model="todo.done" />
+            <span
+              :class="`bubble ${
+                todo.category == 'business' ? 'business' : 'personal'
+              }`"
+            ></span>
+          </label>
+
+          <div class="todo-content">
+            <input type="text" v-model="todo.content" />
+          </div>
+
+          <div class="actions">
+            <button class="delete" @click="removeTodo(todo)">Delete</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </template>
